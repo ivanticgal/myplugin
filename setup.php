@@ -18,8 +18,21 @@ function plugin_init_myplugin()
 
     $plugin = new Plugin();
     if ($plugin->isActivated('myplugin')) {
-        // .. code
+
+        $PLUGIN_HOOKS['menu_toadd']['myplugin'] = [
+            // insert into 'plugin menu'
+            'plugins' => PluginMypluginSuperasset::class
+        ];
     }
+    
+    Plugin::registerClass(
+        PluginMypluginConfig::class,
+        [
+            'addtabon' => [
+                'Config',
+            ]
+        ]
+    );
 }
 
 /**
