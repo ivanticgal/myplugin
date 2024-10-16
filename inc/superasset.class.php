@@ -90,4 +90,31 @@ class PluginMypluginSuperasset extends CommonDBTM
         }
         return true;
     }
+
+    public static function install(Migration $migration)
+    {
+      global $DB;
+  
+       $default_charset = DBConnection::getDefaultCharset();
+          $default_collation = DBConnection::getDefaultCollation();
+          $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+  
+          //Create table only if it does not exists yet!
+          $table = self::getTable();
+          if (!$DB->tableExists($table)) {
+              //table creation query
+              $query = "CREATE TABLE `$table` (
+                      `id`         	INT {$default_key_sign} NOT NULL AUTO_INCREMENT,
+                      `is_deleted` 	TINYINT(1) NOT NULL DEFAULT '0',
+                      `name`      	VARCHAR(255) NOT NULL,
+                      PRIMARY KEY  (`id`)
+              ) ENGINE=InnoDB
+                  DEFAULT CHARSET={$default_charset}
+                  COLLATE={$default_collation}";
+              $DB->queryOrDie($query, $DB->error());
+          }
+  
+          //execute the whole migration
+          $migration->executeMigration();
+      }
 }
